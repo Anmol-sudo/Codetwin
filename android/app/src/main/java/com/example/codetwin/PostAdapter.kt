@@ -13,6 +13,10 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+import com.example.codetwin.utils.TimeUtils
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+
 class PostAdapter(private var posts: List<Post>, private val context: Context) :
     RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
 
@@ -40,8 +44,21 @@ class PostAdapter(private var posts: List<Post>, private val context: Context) :
         val post = posts[position]
         holder.binding.tvTitle.text = post.title
         holder.binding.tvContent.text = post.content
-        holder.binding.tvUsername.text = post.user?.username ?: "Anonymous"
-        holder.binding.tvTime.text = post.createdAt?.substringBefore("T") ?: ""
+        val username = post.user?.username ?: "Anonymous"
+        holder.binding.tvUsername.text = username
+        holder.binding.tvTime.text = TimeUtils.getRelativeTime(post.createdAt)
+
+        // Generate Avatar
+        val firstChar = username.firstOrNull()?.uppercaseChar() ?: '?'
+        holder.binding.tvAvatar.text = firstChar.toString()
+        val bg = holder.binding.tvAvatar.background as? GradientDrawable
+        val colors = intArrayOf(
+            Color.parseColor("#FF5722"), Color.parseColor("#E91E63"), 
+            Color.parseColor("#9C27B0"), Color.parseColor("#673AB7"),
+            Color.parseColor("#3F51B5"), Color.parseColor("#2196F3"), 
+            Color.parseColor("#009688"), Color.parseColor("#4CAF50")
+        )
+        bg?.setColor(colors[username.hashCode().coerceAtLeast(0) % colors.size])
 
         val likeCount = post.likes.size
         holder.binding.btnLike.text = if (likeCount > 0) "$likeCount" else "Like"
@@ -67,6 +84,18 @@ class PostAdapter(private var posts: List<Post>, private val context: Context) :
 
         holder.binding.btnComment.setOnClickListener {
             showCommentDialog(post.id)
+        }
+
+        holder.binding.tvAvatar.setOnClickListener {
+            val intent = android.content.Intent(context, ProfileActivity::class.java)
+            intent.putExtra("USER_ID", post.user?.id)
+            context.startActivity(intent)
+        }
+
+        holder.binding.tvUsername.setOnClickListener {
+            val intent = android.content.Intent(context, ProfileActivity::class.java)
+            intent.putExtra("USER_ID", post.user?.id)
+            context.startActivity(intent)
         }
 
         holder.itemView.setOnClickListener {

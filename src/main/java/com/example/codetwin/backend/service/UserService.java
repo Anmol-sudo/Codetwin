@@ -6,11 +6,13 @@ import org.springframework.stereotype.Service;
 
 import com.example.codetwin.backend.config.JwtUtil;
 import com.example.codetwin.backend.dto.LoginResponse;
+import com.example.codetwin.backend.dto.UserProfileResponse;
 import com.example.codetwin.backend.dto.UserRegisterRequest;
 import com.example.codetwin.backend.model.RefreshToken;
 import com.example.codetwin.backend.model.Role;
 import com.example.codetwin.backend.model.User;
 import com.example.codetwin.backend.repository.UserRepository;
+import com.example.codetwin.backend.repository.PostRepository;
 
 @Service
 public class UserService {
@@ -25,7 +27,24 @@ public class UserService {
     private UserRepository userRepository;
 
     @Autowired
+    private PostRepository postRepository;
+
+    @Autowired
     private RefreshTokenService refreshTokenService;
+
+    public UserProfileResponse getUserProfile(Long userId) {
+        User user = userRepository.findById(userId)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+        
+        long postCount = postRepository.countByUser(user);
+        
+        return new UserProfileResponse(
+            user.getId(),
+            user.getActualUsername(),
+            user.getEmail(),
+            postCount
+        );
+    }
 
     public String registerUser(UserRegisterRequest request) {
 

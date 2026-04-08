@@ -13,6 +13,8 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+import com.example.codetwin.utils.TimeUtils
+
 class PostDetailActivity : AppCompatActivity() {
 
     private lateinit var binding: ActivityPostDetailBinding
@@ -79,7 +81,7 @@ class PostDetailActivity : AppCompatActivity() {
         binding.tvTitle.text = post.title
         binding.tvContent.text = post.content
         binding.tvUsername.text = post.user?.username ?: "Anonymous"
-        binding.tvTime.text = post.createdAt?.substringBefore("T") ?: ""
+        binding.tvTime.text = TimeUtils.getRelativeTime(post.createdAt)
         commentAdapter.updateComments(post.comments)
     }
 

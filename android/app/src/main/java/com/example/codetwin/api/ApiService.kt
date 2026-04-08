@@ -33,4 +33,7 @@ interface ApiService {
 
     @POST("/api/posts/{id}/comment")
     fun addComment(@Path("id") id: Long, @Body comment: Comment): Call<ApiResponse<Comment>>
+
+    @GET("/api/users/{id}")
+    fun getUserProfile(@Path("id") id: Long): Call<ApiResponse<UserProfile>>
 }

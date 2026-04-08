@@ -8,12 +8,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.example.codetwin.backend.dto.ApiResponse;
 import com.example.codetwin.backend.dto.LoginRequest;
 import com.example.codetwin.backend.dto.LoginResponse;
+import com.example.codetwin.backend.dto.UserProfileResponse;
 import com.example.codetwin.backend.dto.RefreshTokenRequest;
 import com.example.codetwin.backend.dto.UserRegisterRequest;
 import com.example.codetwin.backend.service.UserService;
 
 import jakarta.validation.Valid;
 
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
@@ -24,6 +27,12 @@ public class UserController {
     
     @Autowired
     private UserService userService;
+
+    @GetMapping("/{id}")
+    public ResponseEntity<ApiResponse<UserProfileResponse>> getUserProfile(@PathVariable Long id) {
+        UserProfileResponse profile = userService.getUserProfile(id);
+        return ResponseEntity.ok(new ApiResponse<>(true, "Profile loaded", profile));
+    }
 
     @PostMapping("/register")
     public ResponseEntity<ApiResponse<String>> register(

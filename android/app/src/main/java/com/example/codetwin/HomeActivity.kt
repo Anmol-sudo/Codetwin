@@ -19,6 +19,9 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+import com.facebook.shimmer.ShimmerFrameLayout
+import android.view.View
+
 class HomeActivity : AppCompatActivity() {
 
     private lateinit var recyclerView: RecyclerView
@@ -27,6 +30,7 @@ class HomeActivity : AppCompatActivity() {
     private lateinit var sessionManager: SessionManager
 
     private lateinit var swipeRefresh: SwipeRefreshLayout
+    private lateinit var shimmerView: ShimmerFrameLayout
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +56,7 @@ class HomeActivity : AppCompatActivity() {
         setSupportActionBar(toolbar)
         sessionManager = SessionManager(this)
         swipeRefresh = findViewById(R.id.swipeRefresh)
+        shimmerView = findViewById(R.id.shimmerView)
     }
 
     // 🔧 Setup RecyclerView
@@ -104,6 +109,11 @@ class HomeActivity : AppCompatActivity() {
 
     // 🔥 API Call separated
     fun loadPosts() {
+        if (!swipeRefresh.isRefreshing) {
+            shimmerView.visibility = View.VISIBLE
+            shimmerView.startShimmer()
+            recyclerView.visibility = View.GONE
+        }
 
         RetrofitClient.getClient(this).getPosts()
             .enqueue(object : Callback<ApiResponse<List<Post>>> {
@@ -112,6 +122,10 @@ class HomeActivity : AppCompatActivity() {
                     call: Call<ApiResponse<List<Post>>>,
                     response: Response<ApiResponse<List<Post>>>
                 ) {
+                    shimmerView.stopShimmer()
+                    shimmerView.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
+
                     if (response.isSuccessful && response.body() != null) {
 
                         val apiResponse = response.body()!!
@@ -145,6 +159,9 @@ class HomeActivity : AppCompatActivity() {
                     call: Call<ApiResponse<List<Post>>>,
                     t: Throwable
                 ) {
+                    shimmerView.stopShimmer()
+                    shimmerView.visibility = View.GONE
+                    recyclerView.visibility = View.VISIBLE
                     showToast("Connection error: ${t.localizedMessage}")
                     swipeRefresh.isRefreshing = false
                 }

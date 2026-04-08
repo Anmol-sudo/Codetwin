@@ -6,6 +6,10 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.codetwin.databinding.ItemCommentBinding
 import com.example.codetwin.model.Comment
 
+import android.graphics.Color
+import android.graphics.drawable.GradientDrawable
+import com.example.codetwin.utils.TimeUtils
+
 class CommentAdapter(private var comments: List<Comment>) :
     RecyclerView.Adapter<CommentAdapter.CommentViewHolder>() {
 
@@ -28,9 +32,22 @@ class CommentAdapter(private var comments: List<Comment>) :
 
     override fun onBindViewHolder(holder: CommentViewHolder, position: Int) {
         val comment = comments[position]
-        holder.binding.tvCommentUsername.text = comment.user?.username ?: "Anonymous"
+        val username = comment.user?.username ?: "Anonymous"
+        holder.binding.tvCommentUsername.text = username
         holder.binding.tvCommentContent.text = comment.content
-        holder.binding.tvCommentTime.text = comment.createdAt?.substringBefore("T") ?: ""
+        holder.binding.tvCommentTime.text = TimeUtils.getRelativeTime(comment.createdAt)
+
+        // Avatar
+        val firstChar = username.firstOrNull()?.uppercaseChar() ?: '?'
+        holder.binding.tvCommentAvatar.text = firstChar.toString()
+        val bg = holder.binding.tvCommentAvatar.background as? GradientDrawable
+        val colors = intArrayOf(
+            Color.parseColor("#FF5722"), Color.parseColor("#E91E63"),
+            Color.parseColor("#9C27B0"), Color.parseColor("#673AB7"),
+            Color.parseColor("#3F51B5"), Color.parseColor("#2196F3"),
+            Color.parseColor("#009688"), Color.parseColor("#4CAF50")
+        )
+        bg?.setColor(colors[username.hashCode().coerceAtLeast(0) % colors.size])
     }
 
     override fun getItemCount() = comments.size
