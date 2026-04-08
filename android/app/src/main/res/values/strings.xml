@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">Codetwin</string>
+    <string name="welcome_screen_title">CodeTwin</string>
+    <string name="welcome_screen_subtitle">Where Ideas Connect</string>
+    <string name="btn_text">Get Started</string>
+    <string name="login">Login</string>
+    <string name="welcome_to_codetwin">Welcome to CodeTwin 🚀</string>
+</resources>
