@@ -1,29 +1,38 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
+    <!-- Light Mode Colors -->
+    <color name="primary_light">#6200EE</color>
+    <color name="primary_variant_light">#3700B3</color>
+    <color name="secondary_light">#03DAC6</color>
+    <color name="background_light">#F5F5F7</color>
+    <color name="surface_light">#FFFFFF</color>
+    <color name="text_primary_light">#1D1D1F</color>
+    <color name="text_secondary_light">#86868B</color>
+    <color name="divider_light">#E5E5E7</color>
 
-    <!-- Primary Colors -->
-    <color name="primary">#6C63FF</color>
-    <color name="primaryVariant">#5A52E0</color>
+    <!-- Dark Mode Colors -->
+    <color name="primary_dark">#BB86FC</color>
+    <color name="primary_variant_dark">#3700B3</color>
+    <color name="secondary_dark">#03DAC6</color>
+    <color name="background_dark">#121212</color>
+    <color name="surface_dark">#1E1E1E</color>
+    <color name="text_primary_dark">#F5F5F7</color>
+    <color name="text_secondary_dark">#A1A1A6</color>
+    <color name="divider_dark">#333333</color>
+
+    <!-- Semantic Names (Default to Light) -->
+    <color name="primary">@color/primary_light</color>
+    <color name="primaryVariant">@color/primary_variant_light</color>
     <color name="onPrimary">#FFFFFF</color>
-
-    <!-- Secondary Colors -->
-    <color name="secondary">#03DAC6</color>
+    <color name="secondary">@color/secondary_light</color>
     <color name="onSecondary">#000000</color>
-
-    <!-- Background and Surfaces -->
-    <color name="background">#0F0F1A</color>
-    <color name="surface">#1E1E2E</color>
-    <color name="onBackground">#FFFFFF</color>
-    <color name="onSurface">#FFFFFF</color>
-
-    <!-- Text Colors -->
-    <color name="textPrimary">#FFFFFF</color>
-    <color name="textSecondary">#BCBCBC</color>
+    <color name="background">@color/background_light</color>
+    <color name="surface">@color/surface_light</color>
+    <color name="onBackground">@color/text_primary_light</color>
+    <color name="onSurface">@color/text_primary_light</color>
+    <color name="textPrimary">@color/text_primary_light</color>
+    <color name="textSecondary">@color/text_secondary_light</color>
     <color name="textHint">#757575</color>
-
-    <!-- Accent/Misc -->
-    <color name="error">#CF6679</color>
-    <color name="divider">#2C2C3E</color>
+    <color name="divider">@color/divider_light</color>
+    <color name="error">#B00020</color>
 </resources>

@@ -11,6 +11,10 @@ import org.springframework.security.core.userdetails.UserDetails;
 import jakarta.persistence.*;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+
 @Entity
 @Table(name = "users")
 public class User implements UserDetails {
@@ -56,6 +60,13 @@ public class User implements UserDetails {
         return id;
     }
 
+    @JsonProperty("username")
+    public String getActualUsername() {
+        return this.username;
+    }
+
+    @Override
+    @JsonIgnore
     public String getUsername() {
         return this.email;
     }

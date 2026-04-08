@@ -78,6 +78,10 @@ class HomeActivity : AppCompatActivity() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         return when (item.itemId) {
+            R.id.action_toggle_theme -> {
+                toggleTheme()
+                true
+            }
             R.id.action_logout -> {
                 sessionManager.clearSession()
                 startActivity(Intent(this, MainActivity::class.java))
@@ -86,6 +90,16 @@ class HomeActivity : AppCompatActivity() {
             }
             else -> super.onOptionsItemSelected(item)
         }
+    }
+
+    private fun toggleTheme() {
+        val currentMode = androidx.appcompat.app.AppCompatDelegate.getDefaultNightMode()
+        if (currentMode == androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES) {
+            androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_NO)
+        } else {
+            androidx.appcompat.app.AppCompatDelegate.setDefaultNightMode(androidx.appcompat.app.AppCompatDelegate.MODE_NIGHT_YES)
+        }
+        recreate()
     }
 
     // 🔥 API Call separated
@@ -111,7 +125,19 @@ class HomeActivity : AppCompatActivity() {
                         }
 
                     } else {
-                        showToast("Server Error")
+                        val errorMsg = try {
+                            val errorBody = response.errorBody()?.string()
+                            val apiResponse = com.google.gson.Gson().fromJson(errorBody, com.example.codetwin.model.ApiResponse::class.java)
+                            apiResponse.message
+                        } catch (e: Exception) {
+                            "Session expired. Please login again."
+                        }
+                        showToast(errorMsg)
+                        if (response.code() == 401 || response.code() == 403) {
+                            sessionManager.clearSession()
+                            startActivity(Intent(this@HomeActivity, LoginActivity::class.java))
+                            finish()
+                        }
                     }
                 }
 
@@ -119,7 +145,7 @@ class HomeActivity : AppCompatActivity() {
                     call: Call<ApiResponse<List<Post>>>,
                     t: Throwable
                 ) {
-                    showToast("Error: ${t.message}")
+                    showToast("Connection error: ${t.localizedMessage}")
                     swipeRefresh.isRefreshing = false
                 }
             })

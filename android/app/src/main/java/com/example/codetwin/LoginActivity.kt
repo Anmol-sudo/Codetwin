@@ -43,10 +43,7 @@ class LoginActivity : AppCompatActivity() {
                         response: Response<com.example.codetwin.model.ApiResponse<com.example.codetwin.model.LoginResponse>>
                     ) {
                         if (response.isSuccessful && response.body() != null) {
-
                             val apiResponse = response.body()!!
-                            Log.d("API_RESPONSE", response.body().toString())
-                            Log.e("API_ERROR", response.errorBody()?.string() ?: "No error body")
                             if (apiResponse.success) {
                                 val data = apiResponse.data
                                 val sessionManager = com.example.codetwin.utils.SessionManager(this@LoginActivity)
@@ -58,9 +55,15 @@ class LoginActivity : AppCompatActivity() {
                             } else {
                                 Toast.makeText(this@LoginActivity, apiResponse.message, Toast.LENGTH_SHORT).show()
                             }
-
                         } else {
-                            Toast.makeText(this@LoginActivity, "Server Error", Toast.LENGTH_SHORT).show()
+                            val errorMsg = try {
+                                val errorBody = response.errorBody()?.string()
+                                val apiResponse = com.google.gson.Gson().fromJson(errorBody, com.example.codetwin.model.ApiResponse::class.java)
+                                apiResponse.message
+                            } catch (e: Exception) {
+                                "Invalid email or password"
+                            }
+                            Toast.makeText(this@LoginActivity, errorMsg, Toast.LENGTH_LONG).show()
                         }
                     }
 
