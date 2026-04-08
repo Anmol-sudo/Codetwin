@@ -22,6 +22,9 @@ interface ApiService {
     @GET("/api/posts")
     fun getPosts(): Call<ApiResponse<List<Post>>>
 
+    @GET("/api/posts/{id}")
+    fun getPostById(@Path("id") id: Long): Call<ApiResponse<Post>>
+
     @POST("/api/posts")
     fun createPost(@Body post: Post): Call<ApiResponse<Post>>
 

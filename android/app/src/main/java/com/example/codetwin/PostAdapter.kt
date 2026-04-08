@@ -68,6 +68,12 @@ class PostAdapter(private var posts: List<Post>, private val context: Context) :
         holder.binding.btnComment.setOnClickListener {
             showCommentDialog(post.id)
         }
+
+        holder.itemView.setOnClickListener {
+            val intent = android.content.Intent(context, PostDetailActivity::class.java)
+            intent.putExtra("POST_ID", post.id)
+            context.startActivity(intent)
+        }
     }
 
     private fun showCommentDialog(postId: Long?) {

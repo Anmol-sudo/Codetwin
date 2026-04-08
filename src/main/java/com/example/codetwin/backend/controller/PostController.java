@@ -70,6 +70,25 @@ public ResponseEntity<ApiResponse<List<Post>>> getAllPosts() {
     );
 }
 
+// Get Post By ID
+@GetMapping("/{id}")
+public ResponseEntity<ApiResponse<Post>> getPostById(@PathVariable Long id) {
+    try {
+        Post post = postService.getPostById(id);
+        return ResponseEntity.ok(
+            new ApiResponse<>(
+                    true,
+                    "Post fetched successfully",
+                    post
+            )
+        );
+    } catch (Exception e) {
+        return ResponseEntity.badRequest().body(
+            new ApiResponse<>(false, e.getMessage(), null)
+        );
+    }
+}
+
 // Toggle Like
 @PostMapping("/{id}/like")
 public ResponseEntity<ApiResponse<Void>> toggleLike(
