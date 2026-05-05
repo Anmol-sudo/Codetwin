@@ -8,7 +8,7 @@
     android:layout_marginVertical="8dp"
     app:cardBackgroundColor="@color/surface"
     app:cardCornerRadius="16dp"
-    app:cardElevation="2dp"
+    app:cardElevation="0dp"
     app:strokeColor="@color/divider"
     app:strokeWidth="1dp">
 
@@ -26,37 +26,47 @@
 
             <TextView
                 android:id="@+id/tvAvatar"
-                android:layout_width="32dp"
-                android:layout_height="32dp"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
                 android:background="@drawable/bg_avatar_circle"
                 android:gravity="center"
                 android:text="A"
                 android:textColor="@android:color/white"
-                android:textSize="14sp"
+                android:textSize="16sp"
                 android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tvUsername"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="12dp"
-                android:text="username"
-                android:textColor="@color/textSecondary"
-                android:textSize="14sp"
-                android:textStyle="bold" />
+                android:layout_weight="1"
+                android:orientation="vertical">
 
-            <View
-                android:layout_width="0dp"
-                android:layout_height="0dp"
-                android:layout_weight="1" />
+                <TextView
+                    android:id="@+id/tvUsername"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="username"
+                    android:textColor="@color/textPrimary"
+                    android:textSize="15sp"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/tvTime"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="2 mins ago"
-                android:textColor="@color/textHint"
-                android:textSize="12sp" />
+                <TextView
+                    android:id="@+id/tvTime"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="2 mins ago"
+                    android:textColor="@color/textSecondary"
+                    android:textSize="12sp" />
+            </LinearLayout>
+
+            <ImageButton
+                android:id="@+id/btnMenu"
+                android:layout_width="32dp"
+                android:layout_height="32dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_more"
+                app:tint="@color/textSecondary" />
         </LinearLayout>
 
         <TextView
@@ -65,7 +75,7 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="12dp"
             android:text="Post Title"
-            android:textColor="@color/onSurface"
+            android:textColor="@color/textPrimary"
             android:textSize="18sp"
             android:textStyle="bold" />
 
@@ -75,11 +85,27 @@
             android:layout_height="wrap_content"
             android:layout_marginTop="8dp"
             android:ellipsize="end"
-            android:lineSpacingExtra="2dp"
-            android:maxLines="4"
+            android:lineSpacingExtra="4dp"
+            android:maxLines="3"
             android:text="Post content goes here..."
             android:textColor="@color/textSecondary"
             android:textSize="14sp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cvPostImage"
+            android:layout_width="match_parent"
+            android:layout_height="180dp"
+            android:layout_marginTop="12dp"
+            android:visibility="gone"
+            app:cardCornerRadius="12dp"
+            app:cardElevation="0dp">
+
+            <ImageView
+                android:id="@+id/ivPostImage"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:scaleType="centerCrop" />
+        </com.google.android.material.card.MaterialCardView>
 
         <View
             android:layout_width="match_parent"
@@ -98,10 +124,10 @@
                 style="@style/Widget.Material3.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Like"
+                android:text="12"
                 android:textColor="@color/textSecondary"
                 app:icon="@android:drawable/btn_star_big_off"
-                app:iconSize="18dp"
+                app:iconSize="20dp"
                 app:iconTint="@color/textSecondary" />
 
             <com.google.android.material.button.MaterialButton
@@ -110,11 +136,24 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="8dp"
-                android:text="Comment"
+                android:text="5"
                 android:textColor="@color/textSecondary"
                 app:icon="@android:drawable/stat_notify_chat"
-                app:iconSize="18dp"
+                app:iconSize="20dp"
                 app:iconTint="@color/textSecondary" />
+
+            <View
+                android:layout_width="0dp"
+                android:layout_height="0dp"
+                android:layout_weight="1" />
+
+            <ImageButton
+                android:id="@+id/btnShare"
+                android:layout_width="48dp"
+                android:layout_height="48dp"
+                android:background="?attr/selectableItemBackgroundBorderless"
+                android:src="@android:drawable/ic_menu_share"
+                app:tint="@color/textSecondary" />
 
         </LinearLayout>
 

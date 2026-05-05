@@ -91,7 +91,7 @@ class PostDetailActivity : AppCompatActivity() {
             .enqueue(object : Callback<ApiResponse<Comment>> {
                 override fun onResponse(call: Call<ApiResponse<Comment>>, response: Response<ApiResponse<Comment>>) {
                     if (response.isSuccessful) {
-                        binding.etComment.text.clear()
+                        binding.etComment.text?.clear()
                         loadPostDetails() // Refresh to see the new comment
                     } else {
                         Toast.makeText(this@PostDetailActivity, "Error adding comment", Toast.LENGTH_SHORT).show()

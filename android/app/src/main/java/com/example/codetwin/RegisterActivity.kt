@@ -55,7 +55,9 @@ class RegisterActivity : AppCompatActivity() {
                         btnRegister.isEnabled = true
                         if (response.isSuccessful) {
                             Toast.makeText(this@RegisterActivity, "Registration successful!", Toast.LENGTH_SHORT).show()
-                            startActivity(Intent(this@RegisterActivity, LoginActivity::class.java))
+                            val intent = Intent(this@RegisterActivity, LoginActivity::class.java)
+                            intent.putExtra("IS_NEW_USER", true)
+                            startActivity(intent)
                             finish()
                         } else {
                             Toast.makeText(this@RegisterActivity, "Registration failed: ${response.code()}", Toast.LENGTH_SHORT).show()

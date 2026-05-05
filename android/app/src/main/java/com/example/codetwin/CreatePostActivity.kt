@@ -13,12 +13,35 @@ import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
 
+import android.net.Uri
+import androidx.activity.result.contract.ActivityResultContracts
+import android.view.View
+import android.widget.ImageButton
+import android.widget.ImageView
+import com.google.android.material.card.MaterialCardView
+
 class CreatePostActivity : AppCompatActivity() {
 
     private lateinit var etTitle: TextInputEditText
     private lateinit var etContent: TextInputEditText
     private lateinit var btnPost: MaterialButton
     private lateinit var toolbar: Toolbar
+    
+    private lateinit var cvImagePreview: MaterialCardView
+    private lateinit var ivPreview: ImageView
+    private lateinit var btnRemoveImage: ImageButton
+    private lateinit var btnAddImage: MaterialButton
+    
+    private var selectedImageUri: Uri? = null
+
+    private val pickImageLauncher = registerForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
+        if (uri != null) {
+            selectedImageUri = uri
+            ivPreview.setImageURI(uri)
+            cvImagePreview.visibility = View.VISIBLE
+            btnAddImage.visibility = View.GONE
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -34,6 +57,11 @@ class CreatePostActivity : AppCompatActivity() {
         etContent = findViewById(R.id.etContent)
         btnPost = findViewById(R.id.btnPost)
         toolbar = findViewById(R.id.toolbar)
+        
+        cvImagePreview = findViewById(R.id.cvImagePreview)
+        ivPreview = findViewById(R.id.ivPreview)
+        btnRemoveImage = findViewById(R.id.btnRemoveImage)
+        btnAddImage = findViewById(R.id.btnAddImage)
     }
 
     private fun setupToolbar() {
@@ -44,6 +72,16 @@ class CreatePostActivity : AppCompatActivity() {
     }
 
     private fun setupListeners() {
+        btnAddImage.setOnClickListener {
+            pickImageLauncher.launch("image/*")
+        }
+
+        btnRemoveImage.setOnClickListener {
+            selectedImageUri = null
+            cvImagePreview.visibility = View.GONE
+            btnAddImage.visibility = View.VISIBLE
+        }
+
         btnPost.setOnClickListener {
             val title = etTitle.text.toString().trim()
             val content = etContent.text.toString().trim()
@@ -53,7 +91,11 @@ class CreatePostActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            val post = Post(title = title, content = content)
+            // In a real app, you would upload the image to the cloud here
+            // and get a URL. For now, we'll just send the title and content.
+            val imageUrl = if (selectedImageUri != null) "https://example.com/mock-image.png" else null
+            
+            val post = Post(title = title, content = content, imageUrl = imageUrl)
             createPost(post)
         }
     }

@@ -49,6 +49,11 @@ class LoginActivity : AppCompatActivity() {
                                 val sessionManager = com.example.codetwin.utils.SessionManager(this@LoginActivity)
                                 sessionManager.saveTokens(data.accessToken, data.refreshToken, data.userId)
 
+                                val isNewUser = intent.getBooleanExtra("IS_NEW_USER", false)
+                                if (isNewUser) {
+                                    com.example.codetwin.utils.MockDataGenerator.generateMockPosts(this@LoginActivity)
+                                }
+
                                 Toast.makeText(this@LoginActivity, "Login Success!", Toast.LENGTH_SHORT).show()
                                 startActivity(Intent(this@LoginActivity, HomeActivity::class.java))
                                 finish()

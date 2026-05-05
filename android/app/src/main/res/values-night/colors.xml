@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!-- Brand Colors -->
+    <color name="primary">#BB86FC</color>
+    <color name="primaryVariant">#3700B3</color>
+    <color name="secondary">#03DAC6</color>
+    <color name="onSecondary">#000000</color>
+
+    <!-- Dark Mode -->
+    <color name="background">#121212</color>
+    <color name="surface">#1E1E1E</color>
+    <color name="textPrimary">#F5F5F7</color>
+    <color name="textSecondary">#A1A1A6</color>
+    <color name="divider">#333333</color>
+    <color name="onPrimary">#000000</color>
+    <color name="onSurface">#F5F5F7</color>
+    <color name="onBackground">#F5F5F7</color>
+
+    <!-- Others -->
+    <color name="shimmer_base">#2C2C2C</color>
+    <color name="shimmer_highlight">#3A3A3A</color>
+</resources>

@@ -16,6 +16,8 @@ import retrofit2.Response
 import com.example.codetwin.utils.TimeUtils
 import android.graphics.Color
 import android.graphics.drawable.GradientDrawable
+import android.view.View
+import com.bumptech.glide.Glide
 
 class PostAdapter(private var posts: List<Post>, private val context: Context) :
     RecyclerView.Adapter<PostAdapter.PostViewHolder>() {
@@ -47,6 +49,17 @@ class PostAdapter(private var posts: List<Post>, private val context: Context) :
         val username = post.user?.username ?: "Anonymous"
         holder.binding.tvUsername.text = username
         holder.binding.tvTime.text = TimeUtils.getRelativeTime(post.createdAt)
+
+        // Post Image
+        if (!post.imageUrl.isNullOrEmpty()) {
+            holder.binding.cvPostImage.visibility = View.VISIBLE
+            Glide.with(context)
+                .load(post.imageUrl)
+                .placeholder(R.drawable.ic_launcher_background)
+                .into(holder.binding.ivPostImage)
+        } else {
+            holder.binding.cvPostImage.visibility = View.GONE
+        }
 
         // Generate Avatar
         val firstChar = username.firstOrNull()?.uppercaseChar() ?: '?'
