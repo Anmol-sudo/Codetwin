@@ -15,6 +15,9 @@ import com.example.codetwin.backend.model.Comment;
 import com.example.codetwin.backend.model.Post;
 import com.example.codetwin.backend.service.PostService;
 import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
+import org.springframework.http.MediaType;
 
 @RestController
 @RequestMapping("/api/posts")
@@ -29,15 +32,17 @@ public class PostController {
   
 
   // Create Post
-@PostMapping
+@PostMapping(consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 public ResponseEntity<ApiResponse<Post>> createPost(
-        @RequestBody Post post,
+        @RequestParam("title") String title,
+        @RequestParam("content") String content,
+        @RequestParam(value = "image", required = false) MultipartFile image,
         Principal principal) {
-    System.out.println("Principal: " + principal);      
+    
     String email = principal.getName();
 
     try {
-      Post savedPost = postService.createPost(post, email);
+      Post savedPost = postService.createPost(title, content, image, email);
 
       return ResponseEntity.ok(
           new ApiResponse<>(

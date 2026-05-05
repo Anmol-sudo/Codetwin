@@ -25,7 +25,7 @@ class AuthInterceptor(private val context: Context) : Interceptor {
         var response = chain.proceed(request)
 
         // 🔥 If token expired → 401
-        if (response.code() == 401) {
+        if (response.code == 401) {
 
             response.close() // important
 

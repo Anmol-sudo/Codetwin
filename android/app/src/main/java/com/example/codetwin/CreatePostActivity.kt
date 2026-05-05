@@ -1,24 +1,31 @@
 package com.example.codetwin
 
+import android.net.Uri
 import android.os.Bundle
+import android.view.View
+import android.widget.ImageButton
+import android.widget.ImageView
 import android.widget.Toast
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.Toolbar
 import com.example.codetwin.api.RetrofitClient
 import com.example.codetwin.model.ApiResponse
 import com.example.codetwin.model.Post
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.google.android.material.textfield.TextInputEditText
+import okhttp3.MediaType
+import okhttp3.MediaType.Companion.toMediaTypeOrNull
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
+import okhttp3.RequestBody.Companion.asRequestBody
+import okhttp3.RequestBody.Companion.toRequestBody
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
-
-import android.net.Uri
-import androidx.activity.result.contract.ActivityResultContracts
-import android.view.View
-import android.widget.ImageButton
-import android.widget.ImageView
-import com.google.android.material.card.MaterialCardView
+import java.io.File
+import java.io.FileOutputStream
 
 class CreatePostActivity : AppCompatActivity() {
 
@@ -91,41 +98,57 @@ class CreatePostActivity : AppCompatActivity() {
                 return@setOnClickListener
             }
 
-            // In a real app, you would upload the image to the cloud here
-            // and get a URL. For now, we'll just send the title and content.
-            val imageUrl = if (selectedImageUri != null) "https://example.com/mock-image.png" else null
-            
-            val post = Post(title = title, content = content, imageUrl = imageUrl)
-            createPost(post)
+            uploadPost(title, content)
         }
     }
 
-    private fun createPost(post: Post) {
+    private fun uploadPost(title: String, content: String) {
         btnPost.isEnabled = false
-        RetrofitClient.getClient(this).createPost(post)
+        
+        val titleRB = title.toRequestBody("text/plain".toMediaTypeOrNull())
+        val contentRB = content.toRequestBody("text/plain".toMediaTypeOrNull())
+        
+        var imagePart: MultipartBody.Part? = null
+        selectedImageUri?.let { uri ->
+            val file = getFileFromUri(uri)
+            if (file != null) {
+                val mimeType = contentResolver.getType(uri) ?: "image/jpeg"
+                val requestFile = file.asRequestBody(mimeType.toMediaTypeOrNull())
+                imagePart = MultipartBody.Part.createFormData("image", file.name, requestFile)
+            }
+        }
+
+        RetrofitClient.getClient(this).createPost(titleRB, contentRB, imagePart)
             .enqueue(object : Callback<ApiResponse<Post>> {
-                override fun onResponse(
-                    call: Call<ApiResponse<Post>>,
-                    response: Response<ApiResponse<Post>>
-                ) {
+                override fun onResponse(call: Call<ApiResponse<Post>>, response: Response<ApiResponse<Post>>) {
                     btnPost.isEnabled = true
-                    if (response.isSuccessful && response.body() != null) {
-                        val apiResponse = response.body()!!
-                        if (apiResponse.success) {
-                            Toast.makeText(this@CreatePostActivity, "Posted Successfully!", Toast.LENGTH_SHORT).show()
-                            finish()
-                        } else {
-                            Toast.makeText(this@CreatePostActivity, apiResponse.message, Toast.LENGTH_SHORT).show()
-                        }
+                    if (response.isSuccessful && response.body()?.success == true) {
+                        Toast.makeText(this@CreatePostActivity, "Posted Successfully!", Toast.LENGTH_SHORT).show()
+                        finish()
                     } else {
-                        Toast.makeText(this@CreatePostActivity, "Server Error", Toast.LENGTH_SHORT).show()
+                        Toast.makeText(this@CreatePostActivity, "Error: ${response.body()?.message ?: "Server Error"}", Toast.LENGTH_SHORT).show()
                     }
                 }
 
                 override fun onFailure(call: Call<ApiResponse<Post>>, t: Throwable) {
                     btnPost.isEnabled = true
-                    Toast.makeText(this@CreatePostActivity, "Error: ${t.message}", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(this@CreatePostActivity, "Network Error: ${t.message}", Toast.LENGTH_SHORT).show()
                 }
             })
+    }
+
+    private fun getFileFromUri(uri: Uri): File? {
+        val file = File(cacheDir, "temp_image_${System.currentTimeMillis()}.jpg")
+        return try {
+            contentResolver.openInputStream(uri)?.use { input ->
+                FileOutputStream(file).use { output ->
+                    input.copyTo(output)
+                }
+            }
+            file
+        } catch (e: Exception) {
+            e.printStackTrace()
+            null
+        }
     }
 }

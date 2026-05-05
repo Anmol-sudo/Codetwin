@@ -1,6 +1,8 @@
 package com.example.codetwin.api
 
 import com.example.codetwin.model.*
+import okhttp3.MultipartBody
+import okhttp3.RequestBody
 import retrofit2.Call
 import retrofit2.http.Body
 import retrofit2.http.GET
@@ -25,8 +27,13 @@ interface ApiService {
     @GET("/api/posts/{id}")
     fun getPostById(@Path("id") id: Long): Call<ApiResponse<Post>>
 
+    @Multipart
     @POST("/api/posts")
-    fun createPost(@Body post: Post): Call<ApiResponse<Post>>
+    fun createPost(
+        @Part("title") title: RequestBody,
+        @Part("content") content: RequestBody,
+        @Part image: MultipartBody.Part?
+    ): Call<ApiResponse<Post>>
 
     @POST("/api/posts/{id}/like")
     fun toggleLike(@Path("id") id: Long): Call<ApiResponse<Void>>

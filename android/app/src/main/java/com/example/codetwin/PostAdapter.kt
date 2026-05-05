@@ -53,8 +53,15 @@ class PostAdapter(private var posts: List<Post>, private val context: Context) :
         // Post Image
         if (!post.imageUrl.isNullOrEmpty()) {
             holder.binding.cvPostImage.visibility = View.VISIBLE
+            
+            val fullImageUrl = if (post.imageUrl.startsWith("http")) {
+                post.imageUrl
+            } else {
+                "http://10.0.2.2:8080" + post.imageUrl
+            }
+
             Glide.with(context)
-                .load(post.imageUrl)
+                .load(fullImageUrl)
                 .placeholder(R.drawable.ic_launcher_background)
                 .into(holder.binding.ivPostImage)
         } else {

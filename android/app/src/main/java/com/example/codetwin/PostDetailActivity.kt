@@ -12,6 +12,8 @@ import com.example.codetwin.model.Post
 import retrofit2.Call
 import retrofit2.Callback
 import retrofit2.Response
+import android.view.View
+import com.bumptech.glide.Glide
 
 import com.example.codetwin.utils.TimeUtils
 
@@ -82,6 +84,24 @@ class PostDetailActivity : AppCompatActivity() {
         binding.tvContent.text = post.content
         binding.tvUsername.text = post.user?.username ?: "Anonymous"
         binding.tvTime.text = TimeUtils.getRelativeTime(post.createdAt)
+
+        // Post Image
+        if (!post.imageUrl.isNullOrEmpty()) {
+            binding.cvPostImage.visibility = View.VISIBLE
+            val fullImageUrl = if (post.imageUrl.startsWith("http")) {
+                post.imageUrl
+            } else {
+                "http://10.0.2.2:8080" + post.imageUrl
+            }
+
+            Glide.with(this)
+                .load(fullImageUrl)
+                .placeholder(R.drawable.ic_launcher_background)
+                .into(binding.ivPostImage)
+        } else {
+            binding.cvPostImage.visibility = View.GONE
+        }
+
         commentAdapter.updateComments(post.comments)
     }
 

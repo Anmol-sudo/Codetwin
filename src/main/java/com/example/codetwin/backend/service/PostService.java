@@ -13,6 +13,7 @@ import com.example.codetwin.backend.repository.CommentRepository;
 import com.example.codetwin.backend.repository.LikeRepository;
 import com.example.codetwin.backend.repository.PostRepository;
 import com.example.codetwin.backend.repository.UserRepository;
+import org.springframework.web.multipart.MultipartFile;
 import java.util.Optional;
 
 @Service
@@ -22,26 +23,37 @@ public class PostService {
     private final UserRepository userRepository;
     private final LikeRepository likeRepository;
     private final CommentRepository commentRepository;
+    private final FileStorageService fileStorageService;
 
     public PostService(PostRepository postRepository, UserRepository userRepository, 
-                       LikeRepository likeRepository, CommentRepository commentRepository) {
+                       LikeRepository likeRepository, CommentRepository commentRepository,
+                       FileStorageService fileStorageService) {
         this.postRepository = postRepository;
         this.userRepository = userRepository;
         this.likeRepository = likeRepository;
         this.commentRepository = commentRepository;
+        this.fileStorageService = fileStorageService;
     }
 
-    public Post createPost(Post post, String email) {
+    public Post createPost(String title, String content, MultipartFile image, String email) {
 
-        if (post.getTitle() == null || post.getTitle().isEmpty()) {
+        if (title == null || title.isEmpty()) {
             throw new RuntimeException("Title cannot be empty");
         }
 
         User user = userRepository.findByEmail(email)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
+        Post post = new Post();
+        post.setTitle(title);
+        post.setContent(content);
         post.setUser(user);
         post.setCreatedAt(LocalDateTime.now());
+
+        if (image != null && !image.isEmpty()) {
+            String imageUrl = fileStorageService.saveFile(image);
+            post.setImageUrl(imageUrl);
+        }
 
         return postRepository.save(post);
     }
