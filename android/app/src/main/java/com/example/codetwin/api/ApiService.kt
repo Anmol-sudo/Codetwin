@@ -22,7 +22,7 @@ interface ApiService {
     fun refreshToken(@Body request: Map<String, String>): Call<ApiResponse<LoginResponse>>
 
     @GET("/api/posts")
-    fun getPosts(): Call<ApiResponse<List<Post>>>
+    fun getPosts(@Query("query") query: String? = null): Call<ApiResponse<List<Post>>>
 
     @GET("/api/posts/{id}")
     fun getPostById(@Path("id") id: Long): Call<ApiResponse<Post>>

@@ -15,8 +15,8 @@ object MockDataGenerator {
     fun generateMockPosts(context: Context) {
         val mockPosts = listOf(
             Pair("Welcome to Codetwin!", "This is your first post. Codetwin is a platform for developers to share their journey."),
-            Pair("Tips for Spring Boot", "Always use Constructor Injection for better testability and immutability."),
-            Pair("Kotlin vs Java", "Kotlin's null safety is a game changer for Android development.")
+            Pair("Kotlin Code Sample", "Check out this simple function:\n\n```kotlin\nfun helloWorld() {\n    println(\"Hello Codetwin!\")\n}\n```"),
+            Pair("Tips for Spring Boot", "Always use Constructor Injection for better testability and immutability.")
         )
 
         val apiService = RetrofitClient.getClient(context)

@@ -60,7 +60,11 @@ public class PostService {
 
     // Get All Posts
     public List<Post> getAllPosts() {
-        return postRepository.findAll();
+        return postRepository.findAllByOrderByCreatedAtDesc();
+    }
+
+    public List<Post> searchPosts(String query) {
+        return postRepository.findByTitleContainingIgnoreCaseOrContentContainingIgnoreCaseOrderByCreatedAtDesc(query, query);
     }
 
     public Post getPostById(Long id) {

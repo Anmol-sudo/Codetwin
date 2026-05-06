@@ -62,9 +62,15 @@ public ResponseEntity<ApiResponse<Post>> createPost(
 
   // Get All Posts
 @GetMapping
-public ResponseEntity<ApiResponse<List<Post>>> getAllPosts() {
+public ResponseEntity<ApiResponse<List<Post>>> getAllPosts(
+        @RequestParam(value = "query", required = false) String query) {
 
-    List<Post> posts = postService.getAllPosts();
+    List<Post> posts;
+    if (query != null && !query.isEmpty()) {
+        posts = postService.searchPosts(query);
+    } else {
+        posts = postService.getAllPosts();
+    }
 
     return ResponseEntity.ok(
         new ApiResponse<>(

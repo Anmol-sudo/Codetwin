@@ -1,0 +1,30 @@
+1. Advanced Search & Category Filtering (The "Utility" Factor)
+•
+What: A search bar to find posts by title and a "Filter by Tag" (e.g., #Java, #Web, #Career).
+•
+Why for Viva: It shows you know how to handle complex queries in PostgreSQL and update the RecyclerView dynamically on the frontend.
+2. Code Syntax Highlighting (The "Wow" Factor)
+•
+What: Since it’s called "Codetwin," users should be able to post code. Use a library like Markwon or CodeView so that code blocks look like they do in VS Code.
+•
+Why for Viva: It makes your app look professional and immediately justifies the name "Codetwin."
+3. User Profile Stats & Badges (The "Gamification" Factor)
+•
+What: Display "Total Posts," "Total Likes Received," and a "Developer Level" badge (e.g., "Intern" for 1-5 posts, "Senior" for 20+ posts).
+•
+Why for Viva: Professors love seeing "Aggregated Data." It proves you can write SQL COUNT queries and join tables effectively.
+4. Offline Persistence with Room (The "Technical" Factor)
+•
+What: Cache the posts in a local SQLite database (Room). When the user opens the app without internet, they can still see the last 10 posts.
+•
+Why for Viva: This is a major talking point. If they ask, "What happens if there's no network?", you can show off your local caching architecture.
+5. Profile Image Upload (The "Completeness" Factor)
+•
+What: Let users upload a profile picture.
+•
+Why for Viva: It completes the user journey. You already have the logic for post images, so implementing this is just a quick copy-paste and modification of the existing code.
+6. "Share as Image" (The "Cool" Factor)
+•
+What: A button to convert a post into a beautiful image (like a Tweet screenshot) that can be shared on WhatsApp.
+•
+Why for Viva: It’s a very "modern" feature that shows you went above and beyond basic CRUD.

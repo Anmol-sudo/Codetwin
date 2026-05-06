@@ -21,6 +21,7 @@ import retrofit2.Response
 
 import com.facebook.shimmer.ShimmerFrameLayout
 import android.view.View
+import androidx.appcompat.widget.SearchView
 
 class HomeActivity : AppCompatActivity() {
 
@@ -31,6 +32,9 @@ class HomeActivity : AppCompatActivity() {
 
     private lateinit var swipeRefresh: SwipeRefreshLayout
     private lateinit var shimmerView: ShimmerFrameLayout
+    private lateinit var searchView: SearchView
+
+    private var currentQuery: String? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -40,12 +44,12 @@ class HomeActivity : AppCompatActivity() {
         setupRecyclerView()
         setupListeners()
 
-        loadPosts() // initial load
+        loadPosts(null) // initial load
     }
 
     override fun onResume() {
         super.onResume()
-        loadPosts() // 🔥 auto refresh when returning
+        loadPosts(currentQuery) // 🔥 auto refresh when returning
     }
 
     // 🔧 Initialize views
@@ -57,6 +61,7 @@ class HomeActivity : AppCompatActivity() {
         sessionManager = SessionManager(this)
         swipeRefresh = findViewById(R.id.swipeRefresh)
         shimmerView = findViewById(R.id.shimmerView)
+        searchView = findViewById(R.id.searchView)
     }
 
     // 🔧 Setup RecyclerView
@@ -72,7 +77,32 @@ class HomeActivity : AppCompatActivity() {
         }
 
         swipeRefresh.setOnRefreshListener {
-            loadPosts()
+            loadPosts(currentQuery)
+        }
+
+        searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+            override fun onQueryTextSubmit(query: String?): Boolean {
+                currentQuery = if (query.isNullOrEmpty()) null else query.trim()
+                loadPosts(currentQuery)
+                searchView.clearFocus()
+                return true
+            }
+
+            override fun onQueryTextChange(newText: String?): Boolean {
+                val query = if (newText.isNullOrEmpty()) null else newText.trim()
+                // Only load if search is cleared or has at least 2 characters (to reduce API noise)
+                if (query != currentQuery && (query == null || query.length >= 2)) {
+                    currentQuery = query
+                    loadPosts(query)
+                }
+                return true
+            }
+        })
+    }
+
+    private fun updateSearchStatus(query: String?, count: Int) {
+        if (query != null) {
+            showToast("Found $count posts for '$query'")
         }
     }
 
@@ -108,14 +138,14 @@ class HomeActivity : AppCompatActivity() {
     }
 
     // 🔥 API Call separated
-    fun loadPosts() {
+    fun loadPosts(query: String? = null) {
         if (!swipeRefresh.isRefreshing) {
             shimmerView.visibility = View.VISIBLE
             shimmerView.startShimmer()
             recyclerView.visibility = View.GONE
         }
 
-        RetrofitClient.getClient(this).getPosts()
+        RetrofitClient.getClient(this).getPosts(query)
             .enqueue(object : Callback<ApiResponse<List<Post>>> {
 
                 override fun onResponse(
@@ -132,7 +162,7 @@ class HomeActivity : AppCompatActivity() {
 
                         if (apiResponse.success) {
                             recyclerView.adapter = PostAdapter(apiResponse.data, this@HomeActivity)
-                            showToast("Posts Loaded!")
+                            updateSearchStatus(query, apiResponse.data.size)
                             swipeRefresh.isRefreshing = false
                         } else {
                             showToast(apiResponse.message)
